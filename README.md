@@ -2,6 +2,10 @@
 
 mod for controlling behavior of the player's "hand"
 
+## why?
+
+aren't you sick of accidentally breaking the dirt under your crops while you're harvesting, and other such nonsense? 
+
 ## usage:
 
 chat command:
