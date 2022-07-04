@@ -1,6 +1,6 @@
 # hand_control
 
-mod for controlling behavior of the player's "hand"
+minetest mod for controlling behavior of the player's "hand".
 
 ## why?
 
