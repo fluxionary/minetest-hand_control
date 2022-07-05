@@ -59,7 +59,7 @@ function hand_control.formspec.build_survival(name)
 		return ""
 	end
 
-	local available_groupcaps = hand_control.settings.groupcaps
+	local available_groupcaps = hand_control.default_groupcaps
 
 	local inv = player:get_inventory()
 	local hand = inv:get_stack("hand", 1)
@@ -91,35 +91,16 @@ function hand_control.formspec.handle_survival(player, fields)
 		return ""
 	end
 
-	local available_groupcaps = hand_control.settings.groupcaps
+	for group, _ in pairs(hand_control.default_groupcaps) do
+		local change_id = ("hand_control:survival_cap_%s"):format(group)
 
-	local inv = player:get_inventory()
-	local hand = inv:get_stack("hand", 1)
-
-	if hand:get_name() ~= "hand_control:hand" then
-		hand = ItemStack("hand_control:hand")
-	end
-
-	local hand_toolcaps = hand:get_tool_capabilities()
-
-	for group, caps in pairs(available_groupcaps) do
 		if fields[group] == "true" then
-			hand_toolcaps.groupcaps[group] = caps
+			hand_monoid.monoid:del_change(player, change_id)
+
 		elseif fields[group] == "false" then
-			hand_toolcaps.groupcaps[group] = nil
+			hand_monoid.monoid:add_change(player, {groupcaps = {[group] = {}}}, change_id)
 		end
 	end
-
-	local hand_meta = hand:get_meta()
-	hand_meta:set_tool_capabilities(hand_toolcaps)
-
-	if inv:get_size("hand") == 0 then
-		inv:set_size("hand", 1)
-	end
-
-	inv:set_stack("hand", 1, hand)
-
-	minetest.chat_send_all(("hand is now %s"):format(hand:to_string()))
 end
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)

@@ -8,7 +8,6 @@ hand_control = {
 
 	modname = modname,
 	modpath = modpath,
-	mod_storage = minetest.get_mod_storage(),
 
 	S = S,
 
@@ -23,11 +22,12 @@ hand_control = {
 	dofile = function(...)
 		return dofile(table.concat({modpath, ...}, DIR_DELIM) .. ".lua")
 	end,
+
+	default_groupcaps = table.copy(hand_monoid.settings.groupcaps)
 }
 
 hand_control.dofile("settings")
 hand_control.dofile("util")
-hand_control.dofile("hand")
 hand_control.dofile("formspec")
 hand_control.dofile("chatcommands")
 
