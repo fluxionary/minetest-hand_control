@@ -4,6 +4,8 @@ local F = minetest.formspec_escape
 local pairs_by_key = hand_control.util.pairs_by_key
 local table_size = hand_control.util.table_size
 
+local fsl = fs_layout
+
 function hand_control.formspec.build_creative(name)
 	local player = minetest.get_player_by_name(name)
 	if not player then
@@ -14,15 +16,15 @@ function hand_control.formspec.build_creative(name)
 	local hand = inv:get_stack("hand", 1)
 
 	local hand_toolcaps = hand:get_tool_capabilities()
-
-	local fs_parts = {
-		"size[8,8]",
-		("field[0.25,0.25;3,1;full_punch_interval;full_punch_interval;%.03f]"):format(hand_toolcaps.full_punch_interval),
-		("field[4.25,0.25;3,1;max_drop_level;max_drop_level;%i]"):format(hand_toolcaps.max_drop_level),
-	}
-
 	local i = 1
 	local num_caps = table_size(hand_toolcaps.groupcaps)
+
+	local fs_parts = {
+		fsl.field(3, 1, "full_punch_interval", "full_punch_interval", ("%.03f"):format(hand_toolcaps.full_punch_interval)),
+		fsl.field(3, 1, "max_drop_level", "max_drop_level", hand_toolcaps.max_drop_level),
+		fsl.background(8, num_caps + .5, "[combine:16x16^[noalpha^[colorize:#00f")
+	}
+
 	table.insert(fs_parts, ("background[0,1;8,%s;%s]"):format(num_caps + .5, F("[combine:16x16^[noalpha^[colorize:#00f")))
 	table.insert(fs_parts, ("label[0,0.85;tool capabilities]"):format())
 
