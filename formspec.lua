@@ -22,11 +22,11 @@ function hand_control.formspec.build_creative(name)
 	local fs_parts = {
 		fsl.field(3, 1, "full_punch_interval", "full_punch_interval", ("%.03f"):format(hand_toolcaps.full_punch_interval)),
 		fsl.field(3, 1, "max_drop_level", "max_drop_level", hand_toolcaps.max_drop_level),
-		fsl.background(8, num_caps + .5, "[combine:16x16^[noalpha^[colorize:#00f")
+		--fsl.background(8, num_caps + .5, "[combine:16x16^[noalpha^[colorize:#00f"),
+		fsl.line_break(),
+		fsl.label("tool capabilities"),
+		fsl.line_break(),
 	}
-
-	table.insert(fs_parts, ("background[0,1;8,%s;%s]"):format(num_caps + .5, F("[combine:16x16^[noalpha^[colorize:#00f")))
-	table.insert(fs_parts, ("label[0,0.85;tool capabilities]"):format())
 
 	for group, caps in pairs_by_key(hand_toolcaps.groupcaps) do
 		table.insert(fs_parts, ("field[0.25,%s;3.5,1;cg_%i_name;group;%s]"):format(i + 0.7, i, group))
