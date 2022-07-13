@@ -22,8 +22,6 @@ hand_control = {
 	dofile = function(...)
 		return dofile(table.concat({modpath, ...}, DIR_DELIM) .. ".lua")
 	end,
-
-	default_groupcaps = table.copy(hand_monoid.settings.groupcaps)
 }
 
 hand_control.dofile("settings")

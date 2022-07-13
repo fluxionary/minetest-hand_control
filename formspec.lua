@@ -1,10 +1,8 @@
 hand_control.formspec = {}
 
-local F = minetest.formspec_escape
-local pairs_by_key = hand_control.util.pairs_by_key
-local table_size = hand_control.util.table_size
-
 local fsl = fs_layout
+
+local pairs_by_key = hand_control.util.pairs_by_key
 
 function hand_control.formspec.build_creative(name)
 	local player = minetest.get_player_by_name(name)
@@ -17,9 +15,9 @@ function hand_control.formspec.build_creative(name)
 
 	local hand_toolcaps = hand:get_tool_capabilities()
 	local i = 1
-	local num_caps = table_size(hand_toolcaps.groupcaps)
+	--local num_caps = table_size(hand_toolcaps.groupcaps)
 
-	local fs_parts = {
+	local elements = {
 		fsl.field(3, 1, "full_punch_interval", "full_punch_interval", ("%.03f"):format(hand_toolcaps.full_punch_interval)),
 		fsl.field(3, 1, "max_drop_level", "max_drop_level", hand_toolcaps.max_drop_level),
 		--fsl.background(8, num_caps + .5, "[combine:16x16^[noalpha^[colorize:#00f"),
@@ -28,27 +26,46 @@ function hand_control.formspec.build_creative(name)
 		fsl.line_break(),
 	}
 
+	local toolcap_elements = {}
 	for group, caps in pairs_by_key(hand_toolcaps.groupcaps) do
-		table.insert(fs_parts, ("field[0.25,%s;3.5,1;cg_%i_name;group;%s]"):format(i + 0.7, i, group))
-		table.insert(fs_parts, ("field[3.75,%s;1.5,1;cg_%i_maxlevel;max level;%i]"):format(i + 0.7, i, caps.maxlevel))
-		table.insert(fs_parts, ("field[5.25,%s;1,1;cg_%i_time_1;time (1);%s]"):format(i + 0.7, i, caps.times[1] and ("%.03f"):format(caps.times[1]) or ""))
-		table.insert(fs_parts, ("field[6.25,%s;1,1;cg_%i_time_2;time (2);%s]"):format(i + 0.7, i, caps.times[2] and ("%.03f"):format(caps.times[2]) or ""))
-		table.insert(fs_parts, ("field[7.25,%s;1,1;cg_%i_time_3;time (3);%s]"):format(i + 0.7, i, caps.times[3] and ("%.03f"):format(caps.times[3]) or ""))
-
-		--table.insert(fs_parts, ("field[0.25,%s;7,1;cap_group_%s;%s;%s]"):format(i + 0.7, group, group, F(serialize(caps))))
+		table.insert_all(toolcap_elements, {
+			fsl.field(3.5, 1, ("cg_%i_name"):format(i), "group", group),
+			fsl.field(1.5, 1, ("cg_%i_maxlevel"):format(i), "max level", caps.maxlevel),
+			fsl.field(1, 1, ("cg_%i_time_1"):format(i), "time (1)", caps.times[1] and ("%.03f"):format(caps.times[1])),
+			fsl.field(1, 1, ("cg_%i_time_2"):format(i), "time (2)", caps.times[2] and ("%.03f"):format(caps.times[2])),
+			fsl.field(1, 1, ("cg_%i_time_3"):format(i), "time (3)", caps.times[3] and ("%.03f"):format(caps.times[3])),
+			fsl.line_break(),
+		})
 		i = i + 1
 	end
 
-	local num_dgs = table_size(hand_toolcaps.damage_groups)
-	table.insert(fs_parts, ("background[0,%s;8,%s;%s]"):format(i + .8, num_dgs + 0.5, F("[combine:16x16^[noalpha^[colorize:#f00")))
-	table.insert(fs_parts, ("label[0,%s;damage groups]"):format(0.8 - 0.65 + i + 0.5))
+	table.insert(elements, fsl.scroll_container(toolcap_elements))
 
+	--local num_dgs = table_size(hand_toolcaps.damage_groups)
+	--table.insert(fs_parts, ("background[0,%s;8,%s;%s]"):format(i + .8, num_dgs + 0.5, F("[combine:16x16^[noalpha^[colorize:#f00")))
+
+	table.insert_all(elements, {
+		fsl.label("damage groups"),
+		fsl.line_break(),
+	})
+
+	i = 1
 	for group, damage in pairs_by_key(hand_toolcaps.damage_groups) do
-		table.insert(fs_parts, ("field[0.25,%i.5;7,1;damage_group_%s;%s;%s]"):format(i + 1, group, group, damage))
+		table.insert_all(elements, {
+			fsl.field(3.5, 1, ("damage_group_%i"):format(i), "group", group),
+			fsl.field(2, 1, ("damage_%i"):format(i), "damage", damage),
+			fsl.line_break(),
+		})
 		i = i + 1
 	end
 
-	return table.concat(fs_parts, "")
+	table.insert(elements,
+		fsl.button(2, 1, "reset_to_default", "reset to default")
+	)
+
+	elements.formspec_version = 1
+
+	return fs_layout.compose(elements, 0.5, 0.5)
 end
 
 function hand_control.formspec.show_creative(name)
@@ -61,27 +78,30 @@ function hand_control.formspec.build_survival(name)
 		return ""
 	end
 
-	local available_groupcaps = hand_control.default_groupcaps
-
 	local inv = player:get_inventory()
 	local hand = inv:get_stack("hand", 1)
 
 	local hand_toolcaps = hand:get_tool_capabilities()
 	local hand_groupcaps = hand_toolcaps.groupcaps
 
-	local fs_parts = {"size[3,4]"}
+	local elements = {
+		fsl.size(4, 3)
+	}
 
 	local i = 0
-	for group in pairs(available_groupcaps) do
+	for group in pairs_by_key(hand_monoid.settings.groupcaps) do
 		if hand_groupcaps[group] then
-			table.insert(fs_parts, ("checkbox[0,%s;%s;%s;true]"):format(i / 2, group, group))
+			table.insert(elements, fsl.checkbox(group, group, true))
 		else
-			table.insert(fs_parts, ("checkbox[0,%s;%s;%s;false]"):format(i / 2, group, group))
+			table.insert(elements, fsl.checkbox(group, group, false))
 		end
+		table.insert(elements, fsl.line_break(0.5))
 		i = i + 1
 	end
 
-	return table.concat(fs_parts, "")
+	elements.formspec_version = 1
+
+	return fs_layout.compose(elements, 0.5, 0.5)
 end
 
 function hand_control.formspec.show_survival(name)
@@ -93,11 +113,11 @@ function hand_control.formspec.handle_survival(player, fields)
 		return ""
 	end
 
-	for group, _ in pairs(hand_control.default_groupcaps) do
+	for group, caps in pairs(hand_monoid.settings.groupcaps) do
 		local change_id = ("hand_control:survival_cap_%s"):format(group)
 
 		if fields[group] == "true" then
-			hand_monoid.monoid:del_change(player, change_id)
+			hand_monoid.monoid:add_change(player, {groupcaps = {[group] = caps}}, change_id)
 
 		elseif fields[group] == "false" then
 			hand_monoid.monoid:add_change(player, {groupcaps = {[group] = {}}}, change_id)
