@@ -25,7 +25,6 @@ hand_control = {
 }
 
 hand_control.dofile("settings")
-hand_control.dofile("util")
 hand_control.dofile("formspec")
 hand_control.dofile("chatcommands")
 

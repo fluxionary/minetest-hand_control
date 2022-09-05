@@ -26,6 +26,7 @@ stds.hand_control = {
 		"hand_control",
 	},
 	read_globals = {
+		"futil",
 		"default",
 		"fs_layout",
 		"hand_monoid",

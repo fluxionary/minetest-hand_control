@@ -2,7 +2,7 @@ hand_control.formspec = {}
 
 local fsl = fs_layout
 
-local pairs_by_key = hand_control.util.pairs_by_key
+local pairs_by_key = futil.pairs_by_key
 
 function hand_control.formspec.build_creative(name)
 	local player = minetest.get_player_by_name(name)
