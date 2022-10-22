@@ -2,7 +2,7 @@ hand_control.formspec = {}
 
 local fsl = fs_layout
 
-local pairs_by_key = table.pairs_by_key
+local pairs_by_key = futil.table.pairs_by_key
 
 function hand_control.formspec.build_creative(name)
 	local player = minetest.get_player_by_name(name)
@@ -15,7 +15,7 @@ function hand_control.formspec.build_creative(name)
 
 	local hand_toolcaps = hand:get_tool_capabilities()
 	local i = 1
-	--local num_caps = table_size(hand_toolcaps.groupcaps)
+	--local num_caps = futil.table.size(hand_toolcaps.groupcaps)
 
 	local elements = {
 		fsl.field(3, 1, "full_punch_interval", "full_punch_interval", ("%.03f"):format(hand_toolcaps.full_punch_interval)),
@@ -41,7 +41,7 @@ function hand_control.formspec.build_creative(name)
 
 	table.insert(elements, fsl.scroll_container(toolcap_elements))
 
-	--local num_dgs = table_size(hand_toolcaps.damage_groups)
+	--local num_dgs = futil.table.size(hand_toolcaps.damage_groups)
 	--table.insert(fs_parts, ("background[0,%s;8,%s;%s]"):format(i + .8, num_dgs + 0.5, F("[combine:16x16^[noalpha^[colorize:#f00")))
 
 	table.insert_all(elements, {
