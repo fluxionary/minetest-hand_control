@@ -18,7 +18,13 @@ function hand_control.formspec.build_creative(name)
 	--local num_caps = futil.table.size(hand_toolcaps.groupcaps)
 
 	local elements = {
-		fsl.field(3, 1, "full_punch_interval", "full_punch_interval", ("%.03f"):format(hand_toolcaps.full_punch_interval)),
+		fsl.field(
+			3,
+			1,
+			"full_punch_interval",
+			"full_punch_interval",
+			("%.03f"):format(hand_toolcaps.full_punch_interval)
+		),
 		fsl.field(3, 1, "max_drop_level", "max_drop_level", hand_toolcaps.max_drop_level),
 		--fsl.background(8, num_caps + .5, "[combine:16x16^[noalpha^[colorize:#00f"),
 		fsl.line_break(),
@@ -42,7 +48,8 @@ function hand_control.formspec.build_creative(name)
 	table.insert(elements, fsl.scroll_container(toolcap_elements))
 
 	--local num_dgs = futil.table.size(hand_toolcaps.damage_groups)
-	--table.insert(fs_parts, ("background[0,%s;8,%s;%s]"):format(i + .8, num_dgs + 0.5, F("[combine:16x16^[noalpha^[colorize:#f00")))
+	--table.insert(fs_parts, ("background[0,%s;8,%s;%s]"):format(i + .8, num_dgs + 0.5,
+	-- F("[combine:16x16^[noalpha^[colorize:#f00")))
 
 	table.insert_all(elements, {
 		fsl.label("damage groups"),
@@ -59,9 +66,7 @@ function hand_control.formspec.build_creative(name)
 		i = i + 1
 	end
 
-	table.insert(elements,
-		fsl.button(2, 1, "reset_to_default", "reset to default")
-	)
+	table.insert(elements, fsl.button(2, 1, "reset_to_default", "reset to default"))
 
 	elements.formspec_version = 1
 
@@ -85,7 +90,7 @@ function hand_control.formspec.build_survival(name)
 	local hand_groupcaps = hand_toolcaps.groupcaps
 
 	local elements = {
-		fsl.size(4, 3)
+		fsl.size(4, 3),
 	}
 
 	local i = 0
@@ -117,10 +122,9 @@ function hand_control.formspec.handle_survival(player, fields)
 		local change_id = ("hand_control:survival_cap_%s"):format(group)
 
 		if fields[group] == "true" then
-			hand_monoid.monoid:add_change(player, {groupcaps = {[group] = caps}}, change_id)
-
+			hand_monoid.monoid:add_change(player, { groupcaps = { [group] = caps } }, change_id)
 		elseif fields[group] == "false" then
-			hand_monoid.monoid:add_change(player, {groupcaps = {[group] = {}}}, change_id)
+			hand_monoid.monoid:add_change(player, { groupcaps = { [group] = {} } }, change_id)
 		end
 	end
 end

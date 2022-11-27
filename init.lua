@@ -3,12 +3,12 @@ local modpath = minetest.get_modpath(modname)
 local S = minetest.get_translator(modname)
 
 assert(
-	type(futil.version) == "number" and futil.version >= os.time({year = 2022, month = 10, day = 24}),
+	type(futil.version) == "number" and futil.version >= os.time({ year = 2022, month = 10, day = 24 }),
 	"please update futil"
 )
 
 hand_control = {
-	version = os.time({year = 2022, month = 10, day = 26}),
+	version = os.time({ year = 2022, month = 10, day = 26 }),
 	fork = "fluxionary",
 
 	modname = modname,
@@ -25,7 +25,7 @@ hand_control = {
 	end,
 
 	dofile = function(...)
-		return dofile(table.concat({modpath, ...}, DIR_DELIM) .. ".lua")
+		return dofile(table.concat({ modpath, ... }, DIR_DELIM) .. ".lua")
 	end,
 }
 
@@ -33,6 +33,4 @@ hand_control.dofile("settings")
 hand_control.dofile("formspec")
 hand_control.dofile("chatcommands")
 
-minetest.register_on_joinplayer(function(player, last_login)
-
-end)
+minetest.register_on_joinplayer(function(player, last_login) end)
