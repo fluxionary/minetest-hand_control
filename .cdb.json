@@ -1,0 +1,11 @@
+{
+    "type": "MOD",
+    "name": "hand_control",
+    "title": "hand control",
+    "short_description": "take control of the abilities of your hand",
+    "repo": "https://github.com/fluxionary/minetest-hand_control.git",
+    "website": "https://github.com/fluxionary/minetest-hand_control",
+    "issue_tracker": "https://github.com/fluxionary/minetest-hand_control/issues",
+    "license": "AGPL-3.0-or-later",
+    "media_license": "CC-BY-SA-4.0"
+}

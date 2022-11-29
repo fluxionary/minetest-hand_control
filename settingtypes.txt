@@ -1,0 +1,2 @@
+# privilege checked for the creative hand API
+hand_control.creative_priv (hand_control creative_priv) string creative

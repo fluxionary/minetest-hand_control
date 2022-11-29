@@ -1,6 +1,6 @@
 # hand_control
 
-minetest mod for controlling behavior of the player's "hand".
+take control of the abilities of your hand.
 
 ## why?
 
